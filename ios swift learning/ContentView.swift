@@ -9,25 +9,19 @@ import SwiftUI
 
 //实际呈现的UI
 struct ContentView: View {
-    @State private var brain: CalculatorBrain = .left("0")
+    @ObservedObject var model = CalculatorModel()
     
     let scale : CGFloat = UIScreen.main.bounds.width / 414
     var body: some View {
         VStack(spacing: 12){
             Spacer()
-            Text(brain.output)
+            Text(model.brain.output)
                 .frame(minWidth: 0,maxWidth: .infinity,maxHeight: 76, alignment: .trailing)
                 .font(.system(size: 76))
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
                 .padding()
-            Button("Test"){
-                self.brain = .left("1.23")
-            }
-            Button("reset"){
-                self.brain = .left("0")
-            }
-            CalculatorButtonPad(brain: self.$brain,
+            CalculatorButtonPad(model: model,
                 pad: [
                 [.command(.clear),.command(.flip),.command(.percent),.op(.divide)],
                 [.digit(7),.digit(8),.digit(9),.op(.multiply)],
@@ -62,27 +56,27 @@ struct CalculatorButton: View{
     }
 }
 struct CalculatorButtonRow : View{
-    @Binding var brain: CalculatorBrain
+    var model: CalculatorModel
     
     var row: [CalculatorButtonItem]
     var body: some View{
         HStack{
             ForEach(row,id: \.self){item in
                 CalculatorButton(title: item.title, size: item.size, backgroundColorName: item.backgroundColorName, action: {
-                    self.brain = self.brain.apply(item: item)
+                    self.model.apply(item)
                     })
             }
         }
     }
 }
 struct CalculatorButtonPad : View{
-    @Binding var brain: CalculatorBrain
+    var model: CalculatorModel
     
     let pad: [[CalculatorButtonItem]]
     var body: some View{
         VStack(spacing: 12){
             ForEach(pad,id: \.self){
-                aRow in CalculatorButtonRow(brain: self.$brain, row: aRow)
+                aRow in CalculatorButtonRow(model: model, row: aRow)
             }
         }
     }

@@ -60,7 +60,8 @@ extension CalculatorBrain{
         let temp: CalculatorBrain
         switch self{
         case .left(let left):
-            temp = .left(left+String(num))
+            let temp_left = toString(num: Double(left) ?? 0.0)
+            temp = .left(temp_left+String(num))
         case .leftOp(left: let left,op: let op):
             temp = .leftOpRight(left: left, op: op, right: String(num))
         case .leftOpRight(left: let left, op: let op, right: let right):
@@ -123,7 +124,7 @@ extension CalculatorBrain{
             switch self{
             case .left(let left): temp = .left(String(Double(left)! / 100.0))
             case .leftOp(left: let left, op: let op): temp = .leftOpRight(left: left, op: op, right: String(Double(left)! / 100.0))
-            case .leftOpRight(left: let left, op: let op, right: let right): temp = .leftOpRight(left: left, op: op, right: String(Double(left)! / 100.0))
+            case .leftOpRight(left: let left, op: let op, right: let right): temp = .leftOpRight(left: left, op: op, right: String(Double(right)! / 100.0))
             case .error: temp = .error
             }
         }
