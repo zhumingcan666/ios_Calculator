@@ -10,17 +10,28 @@ import SwiftUI
 //实际呈现的UI
 struct ContentView: View {
     @ObservedObject var model = CalculatorModel()
+    @State private var showHistory = false
     
     let scale : CGFloat = UIScreen.main.bounds.width / 414
     var body: some View {
         VStack(spacing: 12){
             Spacer()
+            //sheet isPresented为真时打开新视图，退出新视图后
+            //自动将isPresented设为假，故应当传递一个@State值
+            Button("操作记录"){
+                self.showHistory = true//闭包捕获要加self
+            }
+                .sheet(isPresented: self.$showHistory, content: {
+                    HistoryView(model: self.model)
+                })
+            
             Text(model.brain.output)
                 .frame(minWidth: 0,maxWidth: .infinity,maxHeight: 76, alignment: .trailing)
                 .font(.system(size: 76))
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
                 .padding()
+            
             CalculatorButtonPad(model: model,
                 pad: [
                 [.command(.clear),.command(.flip),.command(.percent),.op(.divide)],
